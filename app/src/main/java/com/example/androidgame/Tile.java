@@ -4,6 +4,9 @@ public class Tile {
 
     int xpos;
     int ypos;
+    int xActual;
+    int yActual;
+    boolean highlighted;
 
     public Tile(){
     }
@@ -11,5 +14,6 @@ public class Tile {
     public Tile (int x, int y){
         xpos = x;
         ypos = y;
+        highlighted = false;
     }
 }

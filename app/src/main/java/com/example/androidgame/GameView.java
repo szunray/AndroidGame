@@ -69,9 +69,16 @@ public class GameView extends SurfaceView implements Runnable {
     public void drawGrid(){
 
             // Choose the brush color for drawing
-            paint.setColor(Color.argb(255, 249, 129, 0));
             for (int x = 0; x <gameGrid.grid.length; x++){
-                canvas.drawCircle((float)gameGrid.grid[x].xpos + CAMERA_X, (float)gameGrid.grid[x].ypos + CAMERA_Y,gameGrid.TILE_WIDTH/2,paint);
+                gameGrid.grid[x].xActual = gameGrid.grid[x].xpos + CAMERA_X;
+                gameGrid.grid[x].yActual = gameGrid.grid[x].ypos + CAMERA_Y;
+
+                paint.setColor(Color.argb(255, 249, 129, 0));
+
+                if(gameGrid.grid[x].highlighted){
+                    paint.setColor(Color.argb(255,250,250,0));
+                }
+                canvas.drawCircle((float)gameGrid.grid[x].xActual, (float)gameGrid.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
             }
             //canvas.drawCircle(x, y, radius, paint);
 

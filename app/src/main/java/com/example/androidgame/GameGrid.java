@@ -49,6 +49,20 @@ public class GameGrid {
 
     }
 
+    public void checkTouch(float touchX, float touchY){
+
+        for (Tile tile : grid){
+            tile.highlighted = false;
+            if((touchX>tile.xActual-TILE_WIDTH/2) && (touchX<tile.xActual+TILE_WIDTH/2)){
+                //if((touchY>tile.yActual-TILE_HEIGHT/2)&&(touchY<tile.yActual+TILE_HEIGHT/2)){
+                if((touchY>tile.yActual+TILE_HEIGHT)&&(touchY<tile.yActual + TILE_HEIGHT*2)){
+                    tile.highlighted = true;
+                }
+            }
+        }
+
+    }
+
     public void convertToIso(Tile tile,Display display){
         Point size = new Point();
         display.getSize(size);

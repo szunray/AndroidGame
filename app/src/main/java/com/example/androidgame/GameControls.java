@@ -23,6 +23,7 @@ public class GameControls {
             case MotionEvent.ACTION_DOWN:
                 touchX = motionEvent.getX();
                 touchY = motionEvent.getY();
+                mainActivity.gameView.gameGrid.checkTouch(touchX,touchY);
                 break;
 
             case MotionEvent.ACTION_MOVE: {
