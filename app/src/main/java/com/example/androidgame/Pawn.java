@@ -21,6 +21,7 @@ public class Pawn {
     public void move(){
         if (moveOrderIndex == moveOrders.length){
             isMoving = false;
+            map.grid[moveOrders[moveOrderIndex-1]].Occupy(this);
         }
         if(!isMoving){
             return;

@@ -8,6 +8,8 @@ import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.List;
+
 public class GameView extends SurfaceView implements Runnable {
 
     // Our Thread
@@ -24,6 +26,7 @@ public class GameView extends SurfaceView implements Runnable {
     Paint paint;
     GameGrid gameGrid;
     Pawn[] pawns;
+
 
     int CAMERA_X = 0;
     int CAMERA_Y = 0 ;
@@ -75,7 +78,7 @@ public class GameView extends SurfaceView implements Runnable {
 
                 paint.setColor(Color.argb(255, 249, 129, 0));
 
-                if(gameGrid.grid[x].highlighted){
+                if(gameGrid.grid[x].highlighted || gameGrid.grid[x].occupied){
                     paint.setColor(Color.argb(255,250,250,0));
                 }
                 canvas.drawCircle((float)gameGrid.grid[x].xActual, (float)gameGrid.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
