@@ -3,12 +3,23 @@ package com.example.androidgame;
 import android.graphics.Point;
 import android.view.Display;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.Math.abs;
+
 public class GameGrid {
     public static int TILE_WIDTH = 150;
     public static int TILE_HEIGHT = 150; //This will probably go elsewhere later.
 
     int height;
     int width;
+
+    public boolean pawnHighlighted = false;
+
+    ArrayList<Tile> highlightedTiles = new ArrayList<Tile>();
+
+
     //Display display;
     //Tile[][] grid;
 
@@ -51,16 +62,57 @@ public class GameGrid {
 
     public void checkTouch(float touchX, float touchY){
 
+        if (touchedGameGrid(touchX, touchY)){
+            return;
+        }
+
+    }
+
+    public boolean touchedGameGrid(float touchX, float touchY){
+
+        boolean gridTouched = false;
+        pawnHighlighted = false;
+        double closestDistance = TILE_WIDTH + 1;
+        Tile touchedTile = new Tile();
         for (Tile tile : grid){
             tile.highlighted = false;
-            if((touchX>tile.xActual-TILE_WIDTH/2) && (touchX<tile.xActual+TILE_WIDTH/2)){
-                //if((touchY>tile.yActual-TILE_HEIGHT/2)&&(touchY<tile.yActual+TILE_HEIGHT/2)){
-                if((touchY>tile.yActual+TILE_HEIGHT)&&(touchY<tile.yActual + TILE_HEIGHT*2)){
-                    tile.highlighted = true;
+
+            // yActual is very likely off by about TileWidth/2.
+            //I doubt that Android draws circles from the center, outward.
+            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY-TILE_HEIGHT),tile.xActual,tile.yActual);
+
+            if(tileToTouchDistance<closestDistance){
+                    closestDistance = tileToTouchDistance;
+                    touchedTile = tile;
+                    gridTouched = true;
                 }
+
+        }
+        if (touchedTile.occupied){
+            pawnHighlighted = true;
+            List<Tile> adjacentTiles = findAdjacent(touchedTile);
+            for (Tile tile : adjacentTiles){
+                tile.highlighted = true;
+            }
+
+        }
+        touchedTile.highlighted = true;
+        return gridTouched;
+    }
+
+    public ArrayList<Tile> findAdjacent(Tile tile){
+        ArrayList<Tile> tiles = new ArrayList<Tile>();
+
+        for (Tile gridTile : grid){
+            //The 1.5 appended at the end of this equation is serviceable,
+            //but it could be better
+            if (GameView.getDistance(tile.xActual,tile.yActual,gridTile.xActual,gridTile.yActual) < TILE_HEIGHT*1.5)
+            {
+                tiles.add(gridTile);
             }
         }
 
+        return tiles;
     }
 
     public void convertToIso(Tile tile,Display display){

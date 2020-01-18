@@ -39,6 +39,10 @@ public class GameView extends SurfaceView implements Runnable {
     // helps center the gamegrid and will likely assist with the camera.
     Display gameDisplay;
 
+    public static double getDistance(int x1, int y1, int x2, int y2){
+        double distance = Math.sqrt(((x2-x1)*(x2-x1))+((y2-y1)*(y2-y1)));
+        return distance;
+    }
     public GameView(Context context, Display display) {
         super(context);
 
@@ -78,8 +82,11 @@ public class GameView extends SurfaceView implements Runnable {
 
                 paint.setColor(Color.argb(255, 249, 129, 0));
 
-                if(gameGrid.grid[x].highlighted || gameGrid.grid[x].occupied){
+                if(gameGrid.grid[x].highlighted){
                     paint.setColor(Color.argb(255,250,250,0));
+                }
+                if(gameGrid.grid[x].occupied){
+                    paint.setColor(Color.argb(255,200,50,0));
                 }
                 canvas.drawCircle((float)gameGrid.grid[x].xActual, (float)gameGrid.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
             }
