@@ -90,6 +90,13 @@ public class GameView extends SurfaceView implements Runnable {
                 }
                 canvas.drawCircle((float)gameGrid.grid[x].xActual, (float)gameGrid.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
             }
+
+            for(Tile tile : gameGrid.pathTiles){
+                paint.setColor(Color.argb(255,250,0,0));
+                canvas.drawCircle((float)tile.xActual, (float)tile.yActual,gameGrid.TILE_WIDTH/2,paint);
+            }
+
+
             //canvas.drawCircle(x, y, radius, paint);
 
     }

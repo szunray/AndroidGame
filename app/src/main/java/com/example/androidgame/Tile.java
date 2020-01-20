@@ -2,6 +2,7 @@ package com.example.androidgame;
 
 public class Tile {
 
+    int index;
     int xpos;
     int ypos;
     int xActual;
@@ -13,7 +14,8 @@ public class Tile {
     public Tile(){
     }
 
-    public Tile (int x, int y){
+    public Tile (int x, int y, int gridIndex){
+        index = gridIndex;
         xpos = x;
         ypos = y;
         highlighted = false;

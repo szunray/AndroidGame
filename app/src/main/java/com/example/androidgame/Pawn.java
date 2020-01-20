@@ -18,10 +18,21 @@ public class Pawn {
         moveOrderIndex = 0;
         moveOrders = new int[]{1,7,8,2,3};
     }
+
+    public Tile getTile(){
+        return map.grid[moveOrders[moveOrderIndex-1]];
+    }
+    public void newOrders(int[] newOrders){
+
+        moveOrderIndex = 0;
+        moveOrders = newOrders;
+        isMoving = true;
+    }
     public void move(){
         if (moveOrderIndex == moveOrders.length){
             isMoving = false;
             map.grid[moveOrders[moveOrderIndex-1]].Occupy(this);
+
         }
         if(!isMoving){
             return;

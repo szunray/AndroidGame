@@ -16,6 +16,8 @@ public class GameGrid {
     int width;
 
     public boolean pawnHighlighted = false;
+    public Pawn pathBuildingPawn;
+    List <Tile> pathTiles = new ArrayList<Tile>();
 
     ArrayList<Tile> highlightedTiles = new ArrayList<Tile>();
 
@@ -31,7 +33,7 @@ public class GameGrid {
         int iterator = 0;
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
-                grid[iterator]  = new Tile(x*TILE_WIDTH,y*TILE_HEIGHT);
+                grid[iterator]  = new Tile(x*TILE_WIDTH,y*TILE_HEIGHT,iterator);
                 iterator ++;
             }
         }
@@ -51,7 +53,7 @@ public class GameGrid {
         int iterator = 0;
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
-                grid[iterator]  = new Tile((x*TILE_WIDTH) ,(y*TILE_HEIGHT) );
+                grid[iterator]  = new Tile((x*TILE_WIDTH) ,(y*TILE_HEIGHT),iterator );
                 convertToIso(grid[iterator],display);
                 iterator ++;
             }
@@ -62,14 +64,87 @@ public class GameGrid {
 
     public void checkTouch(float touchX, float touchY){
 
+        if(pawnHighlighted){
+            buildPath(touchX,touchY);
+        }
         if (touchedGameGrid(touchX, touchY)){
             return;
         }
 
     }
 
+    public boolean buildPath(float touchX,float touchY){
+
+        double closestDistance = TILE_WIDTH + 1;
+
+        //determine the touched tile
+        Tile touchedTile = new Tile();
+        for (Tile tile : grid){
+
+            // yActual is very likely off by about TileWidth/2.
+            //I doubt that Android draws circles from the center, outward.
+            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY-TILE_HEIGHT),tile.xActual,tile.yActual);
+
+            if(tileToTouchDistance<closestDistance){
+                closestDistance = tileToTouchDistance;
+                touchedTile = tile;
+            }
+
+        }
+        // add touched tile to building path if possible
+        if (touchedTile.highlighted){
+            pathTiles.add(touchedTile);
+            clearHighlights();
+
+            List<Tile> adjacentTiles = findAdjacent(touchedTile);
+            for(Tile tile : adjacentTiles){
+                tile.highlighted=true;
+            }
+        }
+
+        if (pathTiles.size() == 4){
+            sendMoveOrders();
+        }
+
+        return true;
+    }
+
+    public boolean sendMoveOrders(){
+
+        List<Integer> Orders = new ArrayList<Integer>();
+
+        for (Tile tile : pathTiles){
+            Orders.add(tile.index);
+        }
+        pathBuildingPawn.getTile().Empty();
+        int[] moveOrders = toIntArray(Orders);
+        pathBuildingPawn.newOrders(moveOrders);
+
+        pawnHighlighted = false;
+        clearHighlights();
+        pathTiles.clear();
+
+        return true;
+    }
+
+    int[] toIntArray(List<Integer> list){
+        int[] ret = new int[list.size()];
+        for(int i = 0;i < ret.length;i++)
+            ret[i] = list.get(i);
+        return ret;
+    }
+
+    public boolean clearHighlights(){
+        for (Tile tile : grid){
+            tile.highlighted = false;
+        }
+        return true;
+    }
     public boolean touchedGameGrid(float touchX, float touchY){
 
+        if (pawnHighlighted){
+            return false;
+        }
         boolean gridTouched = false;
         pawnHighlighted = false;
         double closestDistance = TILE_WIDTH + 1;
@@ -90,6 +165,8 @@ public class GameGrid {
         }
         if (touchedTile.occupied){
             pawnHighlighted = true;
+            pathBuildingPawn = touchedTile.occupier;
+
             List<Tile> adjacentTiles = findAdjacent(touchedTile);
             for (Tile tile : adjacentTiles){
                 tile.highlighted = true;
