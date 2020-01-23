@@ -25,9 +25,10 @@ public class GameGrid {
     //Display display;
     //Tile[][] grid;
 
-    Tile[] grid;
+    //Tile[] grid;
+    Room homeRoom;
     public GameGrid(){
-        height = 5;
+        /*height = 5;
         width = 5;
         grid = new Tile[25];
         int iterator = 0;
@@ -36,29 +37,16 @@ public class GameGrid {
                 grid[iterator]  = new Tile(x*TILE_WIDTH,y*TILE_HEIGHT,iterator);
                 iterator ++;
             }
-        }
-
+        }*/
+        //homeRoom = new Room();
 
     }
 
     public GameGrid(Display display){
-        height = 5;
-        width = 5;
-        Point size = new Point();
-        display.getSize(size);
-        int displayWidth = size.x;
-        int displayHeight = size.y;
 
-        grid = new Tile[25];
-        int iterator = 0;
-        for(int y = 0; y < height; y++){
-            for(int x = 0; x < width; x++){
-                grid[iterator]  = new Tile((x*TILE_WIDTH) ,(y*TILE_HEIGHT),iterator );
-                convertToIso(grid[iterator],display);
-                iterator ++;
-            }
-        }
+        homeRoom = new Room(display);
 
+       // grid = room.grid;
 
     }
 
@@ -79,7 +67,7 @@ public class GameGrid {
 
         //determine the touched tile
         Tile touchedTile = new Tile();
-        for (Tile tile : grid){
+        for (Tile tile : homeRoom.grid){
 
             // yActual is very likely off by about TileWidth/2.
             //I doubt that Android draws circles from the center, outward.
@@ -135,7 +123,7 @@ public class GameGrid {
     }
 
     public boolean clearHighlights(){
-        for (Tile tile : grid){
+        for (Tile tile : homeRoom.grid){
             tile.highlighted = false;
         }
         return true;
@@ -149,7 +137,7 @@ public class GameGrid {
         pawnHighlighted = false;
         double closestDistance = TILE_WIDTH + 1;
         Tile touchedTile = new Tile();
-        for (Tile tile : grid){
+        for (Tile tile : homeRoom.grid){
             tile.highlighted = false;
 
             // yActual is very likely off by about TileWidth/2.
@@ -180,7 +168,7 @@ public class GameGrid {
     public ArrayList<Tile> findAdjacent(Tile tile){
         ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-        for (Tile gridTile : grid){
+        for (Tile gridTile : homeRoom.grid){
             //The 1.5 appended at the end of this equation is serviceable,
             //but it could be better
             if (GameView.getDistance(tile.xActual,tile.yActual,gridTile.xActual,gridTile.yActual) < TILE_HEIGHT*1.5)
@@ -192,7 +180,7 @@ public class GameGrid {
         return tiles;
     }
 
-    public void convertToIso(Tile tile,Display display){
+    public static void convertToIso(Tile tile,Display display){
         Point size = new Point();
         display.getSize(size);
         int displayWidth = size.x;
@@ -202,7 +190,7 @@ public class GameGrid {
         tile.ypos = coordinates[1]+ (displayHeight/4);
     }
     //Cartesian to isometric:
-    public int[] carToIso(int cartX, int cartY) {
+    public static int[] carToIso(int cartX, int cartY) {
         int isoX = cartX - cartY;
         int isoY = (cartX + cartY) / 2;
         int[] ans = {isoX, isoY};

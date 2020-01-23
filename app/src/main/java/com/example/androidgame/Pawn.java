@@ -10,8 +10,8 @@ public class Pawn {
     GameGrid map;
 
     public Pawn(GameGrid gameGrid){
-        xPosition = gameGrid.grid[0].xpos;
-        yPosition = gameGrid.grid[0].ypos;
+        xPosition = gameGrid.homeRoom.grid[0].xpos;
+        yPosition = gameGrid.homeRoom.grid[0].ypos;
         speed = 10;
         isMoving = true;
         map = gameGrid;
@@ -20,7 +20,7 @@ public class Pawn {
     }
 
     public Tile getTile(){
-        return map.grid[moveOrders[moveOrderIndex-1]];
+        return map.homeRoom.grid[moveOrders[moveOrderIndex-1]];
     }
     public void newOrders(int[] newOrders){
 
@@ -31,13 +31,13 @@ public class Pawn {
     public void move(){
         if (moveOrderIndex == moveOrders.length){
             isMoving = false;
-            map.grid[moveOrders[moveOrderIndex-1]].Occupy(this);
+            map.homeRoom.grid[moveOrders[moveOrderIndex-1]].Occupy(this);
 
         }
         if(!isMoving){
             return;
         }
-        Tile target = map.grid[moveOrders[moveOrderIndex]];
+        Tile target = map.homeRoom.grid[moveOrders[moveOrderIndex]];
 
         if (xPosition == (target.xpos)) {
 
