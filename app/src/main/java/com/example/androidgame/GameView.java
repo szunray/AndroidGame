@@ -76,19 +76,22 @@ public class GameView extends SurfaceView implements Runnable {
     public void drawGrid(){
 
             // Choose the brush color for drawing
-            for (int x = 0; x <gameGrid.grid.length; x++){
-                gameGrid.grid[x].xActual = gameGrid.grid[x].xpos + CAMERA_X;
-                gameGrid.grid[x].yActual = gameGrid.grid[x].ypos + CAMERA_Y;
+            for (int x = 0; x <gameGrid.homeRoom.grid.length; x++){
+                gameGrid.homeRoom.grid[x].xActual = gameGrid.homeRoom.grid[x].xpos + CAMERA_X;
+                gameGrid.homeRoom.grid[x].yActual = gameGrid.homeRoom.grid[x].ypos + CAMERA_Y;
 
                 paint.setColor(Color.argb(255, 249, 129, 0));
 
-                if(gameGrid.grid[x].highlighted){
+                if(gameGrid.homeRoom.grid[x].highlighted){
                     paint.setColor(Color.argb(255,250,250,0));
                 }
-                if(gameGrid.grid[x].occupied){
+                if(gameGrid.homeRoom.grid[x].occupied){
                     paint.setColor(Color.argb(255,200,50,0));
                 }
-                canvas.drawCircle((float)gameGrid.grid[x].xActual, (float)gameGrid.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
+                if(gameGrid.homeRoom.grid[x].doorway){
+                    paint.setColor(Color.argb(255,255,255,255));
+                }
+                canvas.drawCircle((float)gameGrid.homeRoom.grid[x].xActual, (float)gameGrid.homeRoom.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
             }
 
             for(Tile tile : gameGrid.pathTiles){

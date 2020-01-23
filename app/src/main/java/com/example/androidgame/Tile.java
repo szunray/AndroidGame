@@ -9,6 +9,7 @@ public class Tile {
     int yActual;
     boolean highlighted;
     boolean occupied;
+    boolean doorway;
     Pawn occupier;
 
     public Tile(){
@@ -20,6 +21,7 @@ public class Tile {
         ypos = y;
         highlighted = false;
         occupied = false;
+        doorway = false;
     }
 
     public void Occupy(Pawn pawn){
