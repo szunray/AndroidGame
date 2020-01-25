@@ -26,7 +26,8 @@ public class GameGrid {
     //Tile[][] grid;
 
     //Tile[] grid;
-    Room homeRoom;
+
+    static Room homeRoom;
     public GameGrid(){
         /*height = 5;
         width = 5;
@@ -61,6 +62,27 @@ public class GameGrid {
 
     }
 
+    public Tile getTile(Pawn pawn){
+
+        double closestDistance = TILE_WIDTH + 1;
+
+        //determine the touched tile
+        Tile pawnTile = new Tile();
+        for (Tile tile : homeRoom.grid){
+
+            // yActual is very likely off by about TileWidth/2.
+            //I doubt that Android draws circles from the center, outward.
+            double tileToPawnDistance = GameView.getDistance((int)pawn.xPosition,(int)(pawn.yPosition),tile.xpos,tile.ypos);
+
+            if(tileToPawnDistance<closestDistance){
+                closestDistance = tileToPawnDistance;
+                pawnTile = tile;
+            }
+
+        }
+        return pawnTile;
+    }
+
     public boolean buildPath(float touchX,float touchY){
 
         double closestDistance = TILE_WIDTH + 1;
@@ -91,7 +113,13 @@ public class GameGrid {
         }
 
         if (pathTiles.size() == 4){
+            for (Tile tile : homeRoom.grid){
+                if (tile.occupier == pathBuildingPawn){
+                    tile.Empty();
+                }
+            }
             sendMoveOrders();
+
         }
 
         return true;

@@ -7,6 +7,9 @@ public class Pawn {
     int[] moveOrders;
     int moveOrderIndex;
     boolean isMoving;
+
+    Tile tile;
+
     GameGrid map;
 
     public Pawn(GameGrid gameGrid){
@@ -20,7 +23,7 @@ public class Pawn {
     }
 
     public Tile getTile(){
-        return map.homeRoom.grid[moveOrders[moveOrderIndex-1]];
+        return map.getTile(this);
     }
     public void newOrders(int[] newOrders){
 
@@ -31,10 +34,18 @@ public class Pawn {
     public void move(){
         if (moveOrderIndex == moveOrders.length){
             isMoving = false;
-            map.homeRoom.grid[moveOrders[moveOrderIndex-1]].Occupy(this);
-
+            tile = getTile();
+            tile.Occupy(this);
         }
         if(!isMoving){
+            tile = getTile();
+            if(getTile().doorway){
+                // using a blank room temporarily
+                Tile door = getTile();
+                Room blankRoom = new Room(GameView.gameDisplay);
+                //
+                GameGrid.homeRoom.explore(blankRoom, door);
+            }
             return;
         }
         Tile target = map.homeRoom.grid[moveOrders[moveOrderIndex]];

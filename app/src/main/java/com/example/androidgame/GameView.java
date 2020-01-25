@@ -37,7 +37,7 @@ public class GameView extends SurfaceView implements Runnable {
     long thisTimeFrame;
 
     // helps center the gamegrid and will likely assist with the camera.
-    Display gameDisplay;
+    static Display gameDisplay;
 
     public static double getDistance(int x1, int y1, int x2, int y2){
         double distance = Math.sqrt(((x2-x1)*(x2-x1))+((y2-y1)*(y2-y1)));

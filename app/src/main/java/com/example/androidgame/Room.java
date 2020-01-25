@@ -3,6 +3,10 @@ package com.example.androidgame;
 import android.graphics.Point;
 import android.view.Display;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.androidgame.GameGrid.TILE_HEIGHT;
 import static com.example.androidgame.GameGrid.TILE_WIDTH;
 
@@ -29,6 +33,33 @@ public class Room {
             }
         }
         grid[24].doorway = true;
+    }
+
+//This will need changing to accomadate the different shapes and configurations
+    // but its a start?
+    public void explore(Room room, Tile offsetTile){
+        List<Tile> currentMap = new ArrayList<Tile>();
+        int iterator = 0;
+
+        for(Tile tile : grid){
+            tile.index = iterator;
+            tile.doorway = false;
+            currentMap.add(tile);
+            iterator++;
+        }
+
+        for (Tile tile : room.grid){
+            //tile.xpos += TILE_WIDTH;
+            tile.ypos += (offsetTile.ypos-300);
+        tile.index = iterator;
+        currentMap.add(tile);
+        iterator++;
+    }
+
+        grid = new Tile[currentMap.size()];
+        grid = currentMap.toArray(grid);
+       // grid = (Tile[])currentMap.toArray();
+
     }
 
 }
