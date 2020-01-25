@@ -93,7 +93,7 @@ public class GameGrid {
 
             // yActual is very likely off by about TileWidth/2.
             //I doubt that Android draws circles from the center, outward.
-            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY-TILE_HEIGHT),tile.xActual,tile.yActual);
+            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY),tile.xActual,tile.yActual);
 
             if(tileToTouchDistance<closestDistance){
                 closestDistance = tileToTouchDistance;
@@ -170,7 +170,7 @@ public class GameGrid {
 
             // yActual is very likely off by about TileWidth/2.
             //I doubt that Android draws circles from the center, outward.
-            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY-TILE_HEIGHT),tile.xActual,tile.yActual);
+            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY),tile.xActual,tile.yActual);
 
             if(tileToTouchDistance<closestDistance){
                     closestDistance = tileToTouchDistance;

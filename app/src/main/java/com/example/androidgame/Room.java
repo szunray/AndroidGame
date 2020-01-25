@@ -50,7 +50,7 @@ public class Room {
 
         for (Tile tile : room.grid){
             //tile.xpos += TILE_WIDTH;
-            tile.ypos += (offsetTile.ypos-300);
+            tile.ypos += (offsetTile.ypos-TILE_HEIGHT+ 30);
         tile.index = iterator;
         currentMap.add(tile);
         iterator++;
