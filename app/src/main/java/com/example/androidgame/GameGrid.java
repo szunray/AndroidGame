@@ -20,8 +20,7 @@ public class GameGrid {
     List <Tile> pathTiles = new ArrayList<Tile>();
 
     ArrayList<Tile> highlightedTiles = new ArrayList<Tile>();
-
-
+    static ArrayList<Room> Map = new ArrayList<Room>();
     //Display display;
     //Tile[][] grid;
 
@@ -46,7 +45,7 @@ public class GameGrid {
     public GameGrid(Display display){
 
         homeRoom = new Room(display);
-
+        Map.add(homeRoom);
        // grid = room.grid;
 
     }
@@ -61,25 +60,53 @@ public class GameGrid {
         }
 
     }
+    public Room getRoom(Pawn pawn){
+        double closestDistance = TILE_WIDTH + 1;
 
+        //determine the touched tile
+        Tile pawnTile = new Tile();
+        Room pawnRoom = new Room(GameView.gameDisplay);
+        for (Room room : Map)
+        {
+            for (Tile tile : room.grid){
+
+                // yActual is very likely off by about TileWidth/2.
+                //I doubt that Android draws circles from the center, outward.
+                double tileToPawnDistance = GameView.getDistance((int)pawn.xPosition,(int)(pawn.yPosition),tile.xpos,tile.ypos);
+
+                if(tileToPawnDistance<closestDistance){
+                    closestDistance = tileToPawnDistance;
+                    pawnTile = tile;
+                    pawnRoom = room;
+                }
+
+            }
+        }
+
+        return pawnRoom;
+    }
     public Tile getTile(Pawn pawn){
 
         double closestDistance = TILE_WIDTH + 1;
 
         //determine the touched tile
         Tile pawnTile = new Tile();
-        for (Tile tile : homeRoom.grid){
+        for (Room room : Map)
+        {
+            for (Tile tile : room.grid){
 
-            // yActual is very likely off by about TileWidth/2.
-            //I doubt that Android draws circles from the center, outward.
-            double tileToPawnDistance = GameView.getDistance((int)pawn.xPosition,(int)(pawn.yPosition),tile.xpos,tile.ypos);
+                // yActual is very likely off by about TileWidth/2.
+                //I doubt that Android draws circles from the center, outward.
+                double tileToPawnDistance = GameView.getDistance((int)pawn.xPosition,(int)(pawn.yPosition),tile.xpos,tile.ypos);
 
-            if(tileToPawnDistance<closestDistance){
-                closestDistance = tileToPawnDistance;
-                pawnTile = tile;
+                if(tileToPawnDistance<closestDistance){
+                    closestDistance = tileToPawnDistance;
+                    pawnTile = tile;
+                }
+
             }
-
         }
+
         return pawnTile;
     }
 
@@ -89,35 +116,41 @@ public class GameGrid {
 
         //determine the touched tile
         Tile touchedTile = new Tile();
-        for (Tile tile : homeRoom.grid){
+        for (Room room : Map) {
 
-            // yActual is very likely off by about TileWidth/2.
-            //I doubt that Android draws circles from the center, outward.
-            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY),tile.xActual,tile.yActual);
 
-            if(tileToTouchDistance<closestDistance){
-                closestDistance = tileToTouchDistance;
-                touchedTile = tile;
+            for (Tile tile : room.grid) {
+
+                // yActual is very likely off by about TileWidth/2.
+                //I doubt that Android draws circles from the center, outward.
+                double tileToTouchDistance = GameView.getDistance((int) touchX, (int) (touchY), tile.xActual, tile.yActual);
+
+                if (tileToTouchDistance < closestDistance) {
+                    closestDistance = tileToTouchDistance;
+                    touchedTile = tile;
+                }
+
             }
+            // add touched tile to building path if possible
+            if (touchedTile.highlighted) {
+                pathTiles.add(touchedTile);
+                clearHighlights();
 
-        }
-        // add touched tile to building path if possible
-        if (touchedTile.highlighted){
-            pathTiles.add(touchedTile);
-            clearHighlights();
-
-            List<Tile> adjacentTiles = findAdjacent(touchedTile);
-            for(Tile tile : adjacentTiles){
-                tile.highlighted=true;
-            }
-        }
-
-        if (pathTiles.size() == 4){
-            for (Tile tile : homeRoom.grid){
-                if (tile.occupier == pathBuildingPawn){
-                    tile.Empty();
+                List<Tile> adjacentTiles = findAdjacent(touchedTile);
+                for (Tile tile : adjacentTiles) {
+                    tile.highlighted = true;
                 }
             }
+        }
+        if (pathTiles.size() >= 4){
+            for (Room room : Map){
+                for (Tile tile : room.grid){
+                    if (tile.occupier == pathBuildingPawn){
+                        tile.Empty();
+                    }
+                }
+            }
+
             sendMoveOrders();
 
         }
@@ -128,14 +161,16 @@ public class GameGrid {
     public boolean sendMoveOrders(){
 
         List<Integer> Orders = new ArrayList<Integer>();
-
+        List<Tile>orders = new ArrayList<Tile>();
         for (Tile tile : pathTiles){
-            Orders.add(tile.index);
+
+            //Orders.add(tile.index);
+            orders.add(tile);
         }
         pathBuildingPawn.getTile().Empty();
-        int[] moveOrders = toIntArray(Orders);
-        pathBuildingPawn.newOrders(moveOrders);
-
+        //int[] moveOrders = toIntArray(Orders);
+        Tile[] moveOrders_Tile = orders.toArray(new Tile[orders.size()]);
+        pathBuildingPawn.readOrders(moveOrders_Tile);
         pawnHighlighted = false;
         clearHighlights();
         pathTiles.clear();
@@ -151,9 +186,12 @@ public class GameGrid {
     }
 
     public boolean clearHighlights(){
-        for (Tile tile : homeRoom.grid){
-            tile.highlighted = false;
+        for(Room room: Map){
+            for (Tile tile : homeRoom.grid){
+                tile.highlighted = false;
+            }
         }
+
         return true;
     }
     public boolean touchedGameGrid(float touchX, float touchY){
@@ -165,20 +203,23 @@ public class GameGrid {
         pawnHighlighted = false;
         double closestDistance = TILE_WIDTH + 1;
         Tile touchedTile = new Tile();
-        for (Tile tile : homeRoom.grid){
-            tile.highlighted = false;
+        for (Room room : Map){
+            for (Tile tile : room.grid){
+                tile.highlighted = false;
 
-            // yActual is very likely off by about TileWidth/2.
-            //I doubt that Android draws circles from the center, outward.
-            double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY),tile.xActual,tile.yActual);
+                // yActual is very likely off by about TileWidth/2.
+                //I doubt that Android draws circles from the center, outward.
+                double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY),tile.xActual,tile.yActual);
 
-            if(tileToTouchDistance<closestDistance){
+                if(tileToTouchDistance<closestDistance){
                     closestDistance = tileToTouchDistance;
                     touchedTile = tile;
                     gridTouched = true;
                 }
 
+            }
         }
+
         if (touchedTile.occupied){
             pawnHighlighted = true;
             pathBuildingPawn = touchedTile.occupier;
@@ -196,14 +237,17 @@ public class GameGrid {
     public ArrayList<Tile> findAdjacent(Tile tile){
         ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-        for (Tile gridTile : homeRoom.grid){
-            //The 1.5 appended at the end of this equation is serviceable,
-            //but it could be better
-            if (GameView.getDistance(tile.xActual,tile.yActual,gridTile.xActual,gridTile.yActual) < TILE_HEIGHT*1.5)
-            {
-                tiles.add(gridTile);
+        for (Room room : Map){
+            for (Tile gridTile : room.grid){
+                //The 1.5 appended at the end of this equation is serviceable,
+                //but it could be better
+                if (GameView.getDistance(tile.xActual,tile.yActual,gridTile.xActual,gridTile.yActual) < TILE_HEIGHT*1.5)
+                {
+                    tiles.add(gridTile);
+                }
             }
         }
+
 
         return tiles;
     }

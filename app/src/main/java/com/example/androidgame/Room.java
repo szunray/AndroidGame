@@ -70,11 +70,11 @@ public class Room {
 //This will need changing to accomadate the different shapes and configurations
     // but its a start?
     public void explore(Room room, Tile offsetTile){
-        GameGrid.Map.add(room);//Map.add(room)
         updateCenter();
         offsetTile.doorway = false;
-        int offsetX = (centerX - offsetTile.xpos);
-        int offsetY = (centerY - offsetTile.ypos);
+        int offsetX = (room.centerX - centerX);
+        int offsetY = (room.centerY - centerY);
+
         List<Tile> currentMap = new ArrayList<Tile>();
         int iterator = 0;
         for(Tile tile : grid){
@@ -86,18 +86,62 @@ public class Room {
 
         for (Tile tile : room.grid){
             //tile.xpos += TILE_WIDTH;
-            tile.ypos += (offsetTile.ypos+offsetY + TILE_HEIGHT);//offsetTile.ypos ;//+ TILE_HEIGHT;
+            tile.xpos += (offsetX);//offsetTile.ypos ;//+ TILE_HEIGHT;
+            tile.ypos -= (offsetY);//offsetTile.ypos ;//+ TILE_HEIGHT;
             //tile.xpos -= offsetX*2;//+ offsetTile.xpos ;//+ TILE_WIDTH;
         tile.index = iterator;
         currentMap.add(tile);
         iterator++;
     }
+        room.updateCenter();
+
+        double xAdjust = Math.signum(offsetTile.xpos - room.centerX);
+        double yAdjust = Math.signum(offsetTile.ypos - room.centerY);
+        while(isOverlappingMap(room)){
+            adjust(room,xAdjust,yAdjust);
+        }
+
+        GameGrid.Map.add(room);//Map.add(room)
 
         //grid = new Tile[currentMap.size()];
         //grid = currentMap.toArray(grid);
         //updateCenter();
        // grid = (Tile[])currentMap.toArray();
 
+    }
+
+    public boolean isOverlapping(Room room){
+        for (Tile tile : grid){
+            for (Tile setTile : room.grid){
+                double distance = GameView.getDistance(tile.xpos,tile.ypos,setTile.xpos,setTile.ypos);
+                if (distance < TILE_HEIGHT){
+                    setTile.highlighted = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isOverlappingMap(Room room){
+        for (Room section : GameGrid.Map){
+            if (section.isOverlapping(room))
+                return true;
+        }
+        return false;
+    }
+
+    public void adjust(Room room, double x, double y){
+       // int xOffset = offsetTile.xpos - room.centerX;
+      //  int yOffset = offsetTile.ypos - room.centerY;
+
+        for(Tile tile : room.grid){
+            tile.xpos+= x*TILE_HEIGHT/2;
+            tile.ypos+= y*TILE_HEIGHT/2;
+        }
+        room.updateCenter();
+       // room.centerY+=TILE_HEIGHT;
+        //room.centerX+=TILE_HEIGHT;
     }
 
 }

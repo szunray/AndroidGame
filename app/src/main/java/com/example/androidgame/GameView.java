@@ -76,7 +76,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void drawGrid(){
 
             // Choose the brush color for drawing
-            for (int x = 0; x <gameGrid.homeRoom.grid.length; x++){
+        /*    for (int x = 0; x <gameGrid.homeRoom.grid.length; x++){
                 gameGrid.homeRoom.grid[x].xActual = gameGrid.homeRoom.grid[x].xpos + CAMERA_X;
                 gameGrid.homeRoom.grid[x].yActual = gameGrid.homeRoom.grid[x].ypos + CAMERA_Y;
 
@@ -92,8 +92,28 @@ public class GameView extends SurfaceView implements Runnable {
                     paint.setColor(Color.argb(255,255,255,255));
                 }
                 canvas.drawCircle((float)gameGrid.homeRoom.grid[x].xActual, (float)gameGrid.homeRoom.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
-            }
+            }*/
 
+            for(Room room : gameGrid.Map){
+                for (Tile tile : room.grid){
+                    tile.xActual = tile.xpos + CAMERA_X;
+                    tile.yActual = tile.ypos + CAMERA_Y;
+
+                    paint.setColor(Color.argb(255, 249, 129, 0));
+
+                    if(tile.highlighted){
+                        paint.setColor(Color.argb(255,250,250,0));
+                    }
+                    if(tile.occupied){
+                        paint.setColor(Color.argb(255,200,50,0));
+                    }
+                    if(tile.doorway){
+                        paint.setColor(Color.argb(255,255,255,255));
+                    }
+                    canvas.drawCircle((float)tile.xActual, (float)tile.yActual,gameGrid.TILE_WIDTH/2,paint);
+
+                }
+            }
             for(Tile tile : gameGrid.pathTiles){
                 paint.setColor(Color.argb(255,250,0,0));
                 canvas.drawCircle((float)tile.xActual, (float)tile.yActual,gameGrid.TILE_WIDTH/2,paint);

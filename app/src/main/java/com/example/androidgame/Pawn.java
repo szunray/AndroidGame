@@ -5,6 +5,7 @@ public class Pawn {
     int yPosition;
     int speed;
     int[] moveOrders;
+    Tile[]moveOrders_Tiles = new Tile[0];
     int moveOrderIndex;
     boolean isMoving;
 
@@ -20,10 +21,15 @@ public class Pawn {
         map = gameGrid;
         moveOrderIndex = 0;
         moveOrders = new int[]{1,7,8,2,3};
+
     }
 
     public Tile getTile(){
         return map.getTile(this);
+    }
+
+    public Room getRoom(){
+        return map.getRoom(this);
     }
     public void newOrders(int[] newOrders){
 
@@ -31,8 +37,16 @@ public class Pawn {
         moveOrders = newOrders;
         isMoving = true;
     }
+
+    public void readOrders(Tile[] newOrders){
+        moveOrderIndex = 0;
+        moveOrders_Tiles = newOrders;
+        isMoving = true;
+    }
     public void move(){
-        if (moveOrderIndex == moveOrders.length){
+
+
+        if (moveOrderIndex == moveOrders_Tiles.length){
             isMoving = false;
             tile = getTile();
             tile.Occupy(this);
@@ -44,11 +58,14 @@ public class Pawn {
                 Tile door = getTile();
                 Room blankRoom = new Room(GameView.gameDisplay);
                 //
-                GameGrid.homeRoom.explore(blankRoom, door);
+                getRoom().explore(blankRoom, door);
+                //GameGrid.homeRoom.updateCenter();
             }
             return;
         }
-        Tile target = map.homeRoom.grid[moveOrders[moveOrderIndex]];
+        Tile target;
+            target = moveOrders_Tiles[moveOrderIndex];
+
 
         if (xPosition == (target.xpos)) {
 
