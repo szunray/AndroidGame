@@ -17,7 +17,7 @@ public class GameGrid {
 
     public boolean pawnHighlighted = false;
     public Pawn pathBuildingPawn;
-    List <Tile> pathTiles = new ArrayList<Tile>();
+    List<Tile> pathTiles = new ArrayList<Tile>();
 
     ArrayList<Tile> highlightedTiles = new ArrayList<Tile>();
     static ArrayList<Room> Map = new ArrayList<Room>();
@@ -27,7 +27,8 @@ public class GameGrid {
     //Tile[] grid;
 
     static Room homeRoom;
-    public GameGrid(){
+
+    public GameGrid() {
         /*height = 5;
         width = 5;
         grid = new Tile[25];
@@ -42,39 +43,39 @@ public class GameGrid {
 
     }
 
-    public GameGrid(Display display){
+    public GameGrid(Display display) {
 
         homeRoom = new Room(display);
         Map.add(homeRoom);
-       // grid = room.grid;
+        // grid = room.grid;
 
     }
 
-    public void checkTouch(float touchX, float touchY){
+    public void checkTouch(float touchX, float touchY) {
 
-        if(pawnHighlighted){
-            buildPath(touchX,touchY);
+        if (pawnHighlighted) {
+            buildPath(touchX, touchY);
         }
-        if (touchedGameGrid(touchX, touchY)){
+        if (touchedGameGrid(touchX, touchY)) {
             return;
         }
 
     }
-    public Room getRoom(Pawn pawn){
+
+    public Room getRoom(Pawn pawn) {
         double closestDistance = TILE_WIDTH + 1;
 
         //determine the touched tile
         Tile pawnTile = new Tile();
         Room pawnRoom = new Room(GameView.gameDisplay);
-        for (Room room : Map)
-        {
-            for (Tile tile : room.grid){
+        for (Room room : Map) {
+            for (Tile tile : room.grid) {
 
                 // yActual is very likely off by about TileWidth/2.
                 //I doubt that Android draws circles from the center, outward.
-                double tileToPawnDistance = GameView.getDistance((int)pawn.xPosition,(int)(pawn.yPosition),tile.xpos,tile.ypos);
+                double tileToPawnDistance = GameView.getDistance((int) pawn.xPosition, (int) (pawn.yPosition), tile.xpos, tile.ypos);
 
-                if(tileToPawnDistance<closestDistance){
+                if (tileToPawnDistance < closestDistance) {
                     closestDistance = tileToPawnDistance;
                     pawnTile = tile;
                     pawnRoom = room;
@@ -85,21 +86,21 @@ public class GameGrid {
 
         return pawnRoom;
     }
-    public Tile getTile(Pawn pawn){
+
+    public Tile getTile(Pawn pawn) {
 
         double closestDistance = TILE_WIDTH + 1;
 
         //determine the touched tile
         Tile pawnTile = new Tile();
-        for (Room room : Map)
-        {
-            for (Tile tile : room.grid){
+        for (Room room : Map) {
+            for (Tile tile : room.grid) {
 
                 // yActual is very likely off by about TileWidth/2.
                 //I doubt that Android draws circles from the center, outward.
-                double tileToPawnDistance = GameView.getDistance((int)pawn.xPosition,(int)(pawn.yPosition),tile.xpos,tile.ypos);
+                double tileToPawnDistance = GameView.getDistance((int) pawn.xPosition, (int) (pawn.yPosition), tile.xpos, tile.ypos);
 
-                if(tileToPawnDistance<closestDistance){
+                if (tileToPawnDistance < closestDistance) {
                     closestDistance = tileToPawnDistance;
                     pawnTile = tile;
                 }
@@ -110,7 +111,7 @@ public class GameGrid {
         return pawnTile;
     }
 
-    public boolean buildPath(float touchX,float touchY){
+    public boolean buildPath(float touchX, float touchY) {
 
         double closestDistance = TILE_WIDTH + 1;
 
@@ -142,10 +143,10 @@ public class GameGrid {
                 }
             }
         }
-        if (pathTiles.size() >= 4){
-            for (Room room : Map){
-                for (Tile tile : room.grid){
-                    if (tile.occupier == pathBuildingPawn){
+        if (pathTiles.size() >= 4) {
+            for (Room room : Map) {
+                for (Tile tile : room.grid) {
+                    if (tile.occupier == pathBuildingPawn) {
                         tile.Empty();
                     }
                 }
@@ -158,11 +159,11 @@ public class GameGrid {
         return true;
     }
 
-    public boolean sendMoveOrders(){
+    public boolean sendMoveOrders() {
 
         List<Integer> Orders = new ArrayList<Integer>();
-        List<Tile>orders = new ArrayList<Tile>();
-        for (Tile tile : pathTiles){
+        List<Tile> orders = new ArrayList<Tile>();
+        for (Tile tile : pathTiles) {
 
             //Orders.add(tile.index);
             orders.add(tile);
@@ -178,40 +179,41 @@ public class GameGrid {
         return true;
     }
 
-    int[] toIntArray(List<Integer> list){
+    int[] toIntArray(List<Integer> list) {
         int[] ret = new int[list.size()];
-        for(int i = 0;i < ret.length;i++)
+        for (int i = 0; i < ret.length; i++)
             ret[i] = list.get(i);
         return ret;
     }
 
-    public boolean clearHighlights(){
-        for(Room room: Map){
-            for (Tile tile : homeRoom.grid){
+    public boolean clearHighlights() {
+        for (Room room : Map) {
+            for (Tile tile : homeRoom.grid) {
                 tile.highlighted = false;
             }
         }
 
         return true;
     }
-    public boolean touchedGameGrid(float touchX, float touchY){
 
-        if (pawnHighlighted){
+    public boolean touchedGameGrid(float touchX, float touchY) {
+
+        if (pawnHighlighted) {
             return false;
         }
         boolean gridTouched = false;
         pawnHighlighted = false;
         double closestDistance = TILE_WIDTH + 1;
         Tile touchedTile = new Tile();
-        for (Room room : Map){
-            for (Tile tile : room.grid){
+        for (Room room : Map) {
+            for (Tile tile : room.grid) {
                 tile.highlighted = false;
 
                 // yActual is very likely off by about TileWidth/2.
                 //I doubt that Android draws circles from the center, outward.
-                double tileToTouchDistance = GameView.getDistance((int)touchX,(int)(touchY),tile.xActual,tile.yActual);
+                double tileToTouchDistance = GameView.getDistance((int) touchX, (int) (touchY), tile.xActual, tile.yActual);
 
-                if(tileToTouchDistance<closestDistance){
+                if (tileToTouchDistance < closestDistance) {
                     closestDistance = tileToTouchDistance;
                     touchedTile = tile;
                     gridTouched = true;
@@ -220,12 +222,12 @@ public class GameGrid {
             }
         }
 
-        if (touchedTile.occupied){
+        if (touchedTile.occupied) {
             pawnHighlighted = true;
             pathBuildingPawn = touchedTile.occupier;
 
             List<Tile> adjacentTiles = findAdjacent(touchedTile);
-            for (Tile tile : adjacentTiles){
+            for (Tile tile : adjacentTiles) {
                 tile.highlighted = true;
             }
 
@@ -234,15 +236,14 @@ public class GameGrid {
         return gridTouched;
     }
 
-    public ArrayList<Tile> findAdjacent(Tile tile){
+    public ArrayList<Tile> findAdjacent(Tile tile) {
         ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-        for (Room room : Map){
-            for (Tile gridTile : room.grid){
+        for (Room room : Map) {
+            for (Tile gridTile : room.grid) {
                 //The 1.5 appended at the end of this equation is serviceable,
                 //but it could be better
-                if (GameView.getDistance(tile.xActual,tile.yActual,gridTile.xActual,gridTile.yActual) < TILE_HEIGHT*1.5)
-                {
+                if (GameView.getDistance(tile.xActual, tile.yActual, gridTile.xActual, gridTile.yActual) < TILE_HEIGHT * 1.5) {
                     tiles.add(gridTile);
                 }
             }
@@ -252,15 +253,16 @@ public class GameGrid {
         return tiles;
     }
 
-    public static void convertToIso(Tile tile,Display display){
+    public static void convertToIso(Tile tile, Display display) {
         Point size = new Point();
         display.getSize(size);
         int displayWidth = size.x;
         int displayHeight = size.y;
-        int[] coordinates = carToIso(tile.xpos,tile.ypos);
-        tile.xpos = coordinates[0]+(displayWidth/2);
-        tile.ypos = coordinates[1]+ (displayHeight/4);
+        int[] coordinates = carToIso(tile.xpos, tile.ypos);
+        tile.xpos = coordinates[0] + (displayWidth / 2);
+        tile.ypos = coordinates[1] + (displayHeight / 4);
     }
+
     //Cartesian to isometric:
     public static int[] carToIso(int cartX, int cartY) {
         int isoX = cartX - cartY;

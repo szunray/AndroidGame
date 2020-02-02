@@ -1,4 +1,5 @@
 package com.example.androidgame;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,9 +28,8 @@ public class GameView extends SurfaceView implements Runnable {
     GameGrid gameGrid;
     Pawn[] pawns;
 
-
     int CAMERA_X = 0;
-    int CAMERA_Y = 0 ;
+    int CAMERA_Y = 0;
     //Tracks the game's Framerate
     long fps;
 
@@ -39,10 +39,11 @@ public class GameView extends SurfaceView implements Runnable {
     // helps center the gamegrid and will likely assist with the camera.
     static Display gameDisplay;
 
-    public static double getDistance(int x1, int y1, int x2, int y2){
-        double distance = Math.sqrt(((x2-x1)*(x2-x1))+((y2-y1)*(y2-y1)));
+    public static double getDistance(int x1, int y1, int x2, int y2) {
+        double distance = Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
         return distance;
     }
+
     public GameView(Context context, Display display) {
         super(context);
 
@@ -55,14 +56,12 @@ public class GameView extends SurfaceView implements Runnable {
         pawns[0] = new Pawn(gameGrid);
 
     }
-    public void drawScene(){
-        if (ourHolder.getSurface().isValid()) {
 
+    public void drawScene() {
+        if (ourHolder.getSurface().isValid()) {
             // Lock the canvas ready to draw
             // Make the drawing surface our canvas object
-
             canvas = ourHolder.lockCanvas();
-
 
             // Draw the background color
             canvas.drawColor(Color.argb(255, 26, 128, 182));
@@ -70,12 +69,12 @@ public class GameView extends SurfaceView implements Runnable {
             drawPawns();
 
             ourHolder.unlockCanvasAndPost(canvas);
-
         }
-        }
-    public void drawGrid(){
+    }
 
-            // Choose the brush color for drawing
+    public void drawGrid() {
+
+        // Choose the brush color for drawing
         /*    for (int x = 0; x <gameGrid.homeRoom.grid.length; x++){
                 gameGrid.homeRoom.grid[x].xActual = gameGrid.homeRoom.grid[x].xpos + CAMERA_X;
                 gameGrid.homeRoom.grid[x].yActual = gameGrid.homeRoom.grid[x].ypos + CAMERA_Y;
@@ -94,49 +93,46 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawCircle((float)gameGrid.homeRoom.grid[x].xActual, (float)gameGrid.homeRoom.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
             }*/
 
-            for(Room room : gameGrid.Map){
-                for (Tile tile : room.grid){
-                    tile.xActual = tile.xpos + CAMERA_X;
-                    tile.yActual = tile.ypos + CAMERA_Y;
+        for (Room room : gameGrid.Map) {
+            for (Tile tile : room.grid) {
+                tile.xActual = tile.xpos + CAMERA_X;
+                tile.yActual = tile.ypos + CAMERA_Y;
 
-                    paint.setColor(Color.argb(255, 249, 129, 0));
+                paint.setColor(Color.argb(255, 249, 129, 0));
 
-                    if(tile.highlighted){
-                        paint.setColor(Color.argb(255,250,250,0));
-                    }
-                    if(tile.occupied){
-                        paint.setColor(Color.argb(255,200,50,0));
-                    }
-                    if(tile.doorway){
-                        paint.setColor(Color.argb(255,255,255,255));
-                    }
-                    canvas.drawCircle((float)tile.xActual, (float)tile.yActual,gameGrid.TILE_WIDTH/2,paint);
-
+                if (tile.highlighted) {
+                    paint.setColor(Color.argb(255, 250, 250, 0));
                 }
+                if (tile.occupied) {
+                    paint.setColor(Color.argb(255, 200, 50, 0));
+                }
+                if (tile.doorway) {
+                    paint.setColor(Color.argb(255, 255, 255, 255));
+                }
+                canvas.drawCircle((float) tile.xActual, (float) tile.yActual, gameGrid.TILE_WIDTH / 2, paint);
+
             }
-            for(Tile tile : gameGrid.pathTiles){
-                paint.setColor(Color.argb(255,250,0,0));
-                canvas.drawCircle((float)tile.xActual, (float)tile.yActual,gameGrid.TILE_WIDTH/2,paint);
-            }
+        }
+        for (Tile tile : gameGrid.pathTiles) {
+            paint.setColor(Color.argb(255, 250, 0, 0));
+            canvas.drawCircle((float) tile.xActual, (float) tile.yActual, gameGrid.TILE_WIDTH / 2, paint);
+        }
 
-
-            //canvas.drawCircle(x, y, radius, paint);
-
+        //canvas.drawCircle(x, y, radius, paint);
     }
 
-    public void drawPawns(){
+    public void drawPawns() {
         paint.setColor(Color.argb(255, 0, 129, 100));
 
-        for (Pawn pawn : pawns){
+        for (Pawn pawn : pawns) {
             pawn.move();
-            canvas.drawCircle((float)pawn.xPosition + CAMERA_X, (float)pawn.yPosition + CAMERA_Y,gameGrid.TILE_WIDTH/3,paint);
+            canvas.drawCircle((float) pawn.xPosition + CAMERA_X, (float) pawn.yPosition + CAMERA_Y, gameGrid.TILE_WIDTH / 3, paint);
         }
     }
 
     @Override
     public void run() {
         while (playing) {
-
             //capture the current time in milliseconds
             long startFrameTime = System.currentTimeMillis();
             drawScene();
@@ -146,7 +142,6 @@ public class GameView extends SurfaceView implements Runnable {
     // shutdown our thread.
     public void pause() {
         playing = false;
-
 
         try {
             gameThread.join();

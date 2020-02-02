@@ -12,10 +12,10 @@ public class Tile {
     boolean doorway;
     Pawn occupier;
 
-    public Tile(){
+    public Tile() {
     }
 
-    public Tile (int x, int y, int gridIndex){
+    public Tile(int x, int y, int gridIndex) {
         index = gridIndex;
         xpos = x;
         ypos = y;
@@ -24,12 +24,12 @@ public class Tile {
         doorway = false;
     }
 
-    public void Occupy(Pawn pawn){
+    public void Occupy(Pawn pawn) {
         occupier = pawn;
         occupied = true;
     }
 
-    public void Empty(){
+    public void Empty() {
         occupier = null;
         occupied = false;
     }

@@ -11,12 +11,12 @@ public class GameControls {
     float touchX;
     float touchY;
 
-    public GameControls(MainActivity activity){
+    public GameControls(MainActivity activity) {
         mainActivity = activity;
         cameraIsPanning = false;
         givingCommands = false;
-         //touchX = 0;
-       //  touchY = 0;
+        //touchX = 0;
+        //touchY = 0;
     }
 
     public void handleTouch(MotionEvent motionEvent) {
@@ -27,7 +27,7 @@ public class GameControls {
             case MotionEvent.ACTION_DOWN:
                 touchX = motionEvent.getX();
                 touchY = motionEvent.getY();
-                mainActivity.gameView.gameGrid.checkTouch(touchX,touchY);
+                mainActivity.gameView.gameGrid.checkTouch(touchX, touchY);
                 break;
 
             case MotionEvent.ACTION_MOVE: {

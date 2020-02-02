@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
 
     GameView gameView;
     GameControls gameControls;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
