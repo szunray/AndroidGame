@@ -73,8 +73,8 @@ public class Room {
     public void explore(Room room, Tile offsetTile) {
         updateCenter();
         offsetTile.doorway = false;
-        int offsetX = (room.centerX - centerX);
-        int offsetY = (room.centerY - centerY);
+        int offsetX = (room.centerX - offsetTile.xpos);
+        int offsetY = (room.centerY - offsetTile.ypos);
 
         List<Tile> currentMap = new ArrayList<Tile>();
         int iterator = 0;
@@ -87,7 +87,7 @@ public class Room {
 
         for (Tile tile : room.grid) {
             //tile.xpos += TILE_WIDTH;
-            tile.xpos += (offsetX);//offsetTile.ypos ;//+ TILE_HEIGHT;
+            tile.xpos -= (offsetX);//offsetTile.ypos ;//+ TILE_HEIGHT;
             tile.ypos -= (offsetY);//offsetTile.ypos ;//+ TILE_HEIGHT;
             //tile.xpos -= offsetX*2;//+ offsetTile.xpos ;//+ TILE_WIDTH;
             tile.index = iterator;
@@ -96,8 +96,8 @@ public class Room {
         }
         room.updateCenter();
 
-        double xAdjust = Math.signum(offsetTile.xpos - room.centerX);
-        double yAdjust = Math.signum(offsetTile.ypos - room.centerY);
+        double xAdjust = Math.signum(room.centerX - centerX );
+        double yAdjust = Math.signum(room.centerY - centerY );
         while (isOverlappingMap(room)) {
             adjust(room, xAdjust, yAdjust);
         }
