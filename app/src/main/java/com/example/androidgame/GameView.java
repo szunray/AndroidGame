@@ -2,47 +2,47 @@ package com.example.androidgame;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.List;
+import com.example.androidgame.characters.Pawn;
+import com.example.androidgame.environment.Background;
+import com.example.androidgame.environment.World;
 
 public class GameView extends SurfaceView implements Runnable {
+
+    // helps center the gamegrid and will likely assist with the camera.
+    public static Display gameDisplay;
 
     // Our Thread
     Thread gameThread = null;
 
-    //Will be used with Paint and Canvas
+    // Will be used with Paint and Canvas
     SurfaceHolder ourHolder;
 
-    //Is the game playing?
+    // Is the game playing?
     volatile boolean playing;
 
-    //Canvas and Paint objects
+    // Canvas and Paint objects
     Canvas canvas;
     Paint paint;
-    GameGrid gameGrid;
+    World world;
     Pawn[] pawns;
+    UserInterface ui;
+    Background bg;
 
-    int CAMERA_X = 0;
-    int CAMERA_Y = 0;
-    //Tracks the game's Framerate
-    long fps;
+    boolean cameraIsPanning;
+    boolean givingCommands;
+    float touchX;
+    float touchY;
 
-    //Used to help calculate FPS
-    long thisTimeFrame;
-
-    // helps center the gamegrid and will likely assist with the camera.
-    static Display gameDisplay;
-
-    public static double getDistance(int x1, int y1, int x2, int y2) {
-        double distance = Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
-        return distance;
-    }
+    // Camera location
+    Point camera = new Point(0, 0);
 
     public GameView(Context context, Display display) {
         super(context);
@@ -51,90 +51,114 @@ public class GameView extends SurfaceView implements Runnable {
         ourHolder = getHolder();
         paint = new Paint();
         gameDisplay = display;
-        gameGrid = new GameGrid(display);
+        world = new World(display);
         pawns = new Pawn[1];
-        pawns[0] = new Pawn(gameGrid);
-
+        pawns[0] = new Pawn(world.getStartingTile());
+        ui = new UserInterface();
+        bg = new Background(context);
     }
 
+    // Calculate animations & movement outside of the draw cycle,
+    // so everything is given the same amount of time to animate.
+    private void update() {
+        bg.update(camera);
+        world.update(camera);
+        for (Pawn pawn : pawns) {
+            pawn.update(camera);
+        }
+        ui.update(camera);
+    }
+
+    // Draw the scene
     public void drawScene() {
         if (ourHolder.getSurface().isValid()) {
             // Lock the canvas ready to draw
             // Make the drawing surface our canvas object
             canvas = ourHolder.lockCanvas();
 
-            // Draw the background color
-            canvas.drawColor(Color.argb(255, 26, 128, 182));
-            drawGrid();
-            drawPawns();
+            canvas.save();
+            canvas.translate(camera.x, camera.y);
+
+            bg.draw(canvas, paint);
+            world.draw(canvas, paint);
+            for (Pawn pawn : pawns) {
+                pawn.draw(canvas, paint);
+            }
+
+            canvas.restore();
+
+            ui.draw(canvas, paint);
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
     }
 
-    public void drawGrid() {
-
-        // Choose the brush color for drawing
-        /*    for (int x = 0; x <gameGrid.homeRoom.grid.length; x++){
-                gameGrid.homeRoom.grid[x].xActual = gameGrid.homeRoom.grid[x].xpos + CAMERA_X;
-                gameGrid.homeRoom.grid[x].yActual = gameGrid.homeRoom.grid[x].ypos + CAMERA_Y;
-
-                paint.setColor(Color.argb(255, 249, 129, 0));
-
-                if(gameGrid.homeRoom.grid[x].highlighted){
-                    paint.setColor(Color.argb(255,250,250,0));
-                }
-                if(gameGrid.homeRoom.grid[x].occupied){
-                    paint.setColor(Color.argb(255,200,50,0));
-                }
-                if(gameGrid.homeRoom.grid[x].doorway){
-                    paint.setColor(Color.argb(255,255,255,255));
-                }
-                canvas.drawCircle((float)gameGrid.homeRoom.grid[x].xActual, (float)gameGrid.homeRoom.grid[x].yActual,gameGrid.TILE_WIDTH/2,paint);
-            }*/
-
-        for (Room room : gameGrid.Map) {
-            for (Tile tile : room.grid) {
-                tile.xActual = tile.xpos + CAMERA_X;
-                tile.yActual = tile.ypos + CAMERA_Y;
-
-                paint.setColor(Color.argb(255, 249, 129, 0));
-
-                if (tile.highlighted) {
-                    paint.setColor(Color.argb(255, 250, 250, 0));
-                }
-                if (tile.occupied) {
-                    paint.setColor(Color.argb(255, 200, 50, 0));
-                }
-                if (tile.doorway) {
-                    paint.setColor(Color.argb(255, 255, 255, 255));
-                }
-                canvas.drawCircle((float) tile.xActual, (float) tile.yActual, gameGrid.TILE_WIDTH / 2, paint);
-
+    public void handleTouch(MotionEvent motionEvent) {
+        if (ui.handleTouch(motionEvent, camera)){
+            cameraIsPanning = false;
+            return;
+        }
+        for (Pawn pawn : pawns) {
+            if (pawn.handleTouch(motionEvent, camera)){
+                cameraIsPanning = false;
+                return;
             }
         }
-        for (Tile tile : gameGrid.pathTiles) {
-            paint.setColor(Color.argb(255, 250, 0, 0));
-            canvas.drawCircle((float) tile.xActual, (float) tile.yActual, gameGrid.TILE_WIDTH / 2, paint);
+        if (world.handleTouch(motionEvent, camera)){
+            cameraIsPanning = false;
+            return;
         }
 
-        //canvas.drawCircle(x, y, radius, paint);
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+            // Player has touched finger to the screen
+            case MotionEvent.ACTION_DOWN:
+                cameraIsPanning = false;
+                touchX = motionEvent.getX();
+                touchY = motionEvent.getY();
+               // mainActivity.gameView.gameGrid.checkTouch(touchX, touchY);
+                break;
+
+            case MotionEvent.ACTION_MOVE: {
+
+                // Find the index of the active pointer and fetch its position
+                final float activeX = motionEvent.getX();
+                final float activeY = motionEvent.getY();
+
+                // If we didn't get an "ACTION_DOWN" event before panning, set touchX and touchY here
+                // so that the scene doesn't dump across the display.
+                if (!cameraIsPanning){
+                    touchX = activeX;
+                    touchY = activeY;
+                    cameraIsPanning = true;
+                    return;
+                }
+
+                cameraIsPanning = true;
+
+                // Calculate the distance moved
+                float dx = activeX - touchX;
+                float dy = activeY - touchY;
+                camera.x += dx;
+                camera.y += dy;
+
+                // Remember this touch position for the next move event
+                touchX = activeX;
+                touchY = activeY;
+
+                break;
+            }
+        }
     }
 
-    public void drawPawns() {
-        paint.setColor(Color.argb(255, 0, 129, 100));
-
-        for (Pawn pawn : pawns) {
-            pawn.move();
-            canvas.drawCircle((float) pawn.xPosition + CAMERA_X, (float) pawn.yPosition + CAMERA_Y, gameGrid.TILE_WIDTH / 3, paint);
-        }
+    public static double getDistance(int x1, int y1, int x2, int y2) {
+        double distance = Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
+        return distance;
     }
 
     @Override
     public void run() {
         while (playing) {
-            //capture the current time in milliseconds
-            long startFrameTime = System.currentTimeMillis();
+            update();
             drawScene();
         }
     }
@@ -148,7 +172,6 @@ public class GameView extends SurfaceView implements Runnable {
         } catch (InterruptedException e) {
             Log.e("Error:", "joining thread");
         }
-
     }
 
     // start our thread.

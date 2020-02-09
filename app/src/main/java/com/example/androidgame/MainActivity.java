@@ -10,7 +10,7 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     GameView gameView;
-    GameControls gameControls;
+    //GameControls gameControls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         gameView = new GameView(this, display);
 
         setContentView(gameView);
-        gameControls = new GameControls(this);
+        //gameControls = new GameControls(this);
     }
 
     // This method executes when the player starts the game
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        gameControls.handleTouch(motionEvent);
+        gameView.handleTouch(motionEvent);
         return true;
     }
 
