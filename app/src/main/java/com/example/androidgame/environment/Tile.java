@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -91,7 +92,11 @@ public class Tile extends Element implements MyDrawable, Touchable {
         if (doorway) {
             p.setColor(Color.argb(255, 255, 255, 255));
         }
-        c.drawCircle((float) x, (float) y, TILE_WIDTH_HALF, p);
+        //
+        RectF location = new RectF(x,y, x+(TILE_WIDTH),y+(TILE_WIDTH));
+        c.drawBitmap(room.spriteSheet,room.sprites[1],location,p);
+        //
+        //c.drawCircle((float) x, (float) y, TILE_WIDTH_HALF, p);
     }
 
     @Override

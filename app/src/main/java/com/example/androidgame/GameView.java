@@ -30,6 +30,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     // Canvas and Paint objects
     Canvas canvas;
+    Context gvContext;
     Paint paint;
     World world;
     Pawn[] pawns;
@@ -46,12 +47,12 @@ public class GameView extends SurfaceView implements Runnable {
 
     public GameView(Context context, Display display) {
         super(context);
-
+        gvContext = context;
         //Initialize Holder and Paint objects
         ourHolder = getHolder();
         paint = new Paint();
         gameDisplay = display;
-        world = new World(display);
+        world = new World(this);
         pawns = new Pawn[1];
         pawns[0] = new Pawn(world.getStartingTile());
         ui = new UserInterface();

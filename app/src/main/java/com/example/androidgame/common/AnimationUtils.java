@@ -17,7 +17,38 @@ public class AnimationUtils {
 
     public static class AnimationTools{
 
-        public static void readAnimXML(Context context, String fileName, Rect[] frame){
+        public static int countSprites(InputStream in)throws XmlPullParserException, IOException{
+            XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
+            XmlPullParser myparser = xmlFactoryObject.newPullParser();
+
+            myparser.setInput(in,null);
+
+            int event = myparser.getEventType();
+            int iterator=0;
+            while (event != XmlPullParser.END_DOCUMENT){
+                String name = myparser.getName();
+                switch (event){
+
+                    case XmlPullParser.START_TAG:
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if (name.equals("sprite")){
+                            iterator ++;
+
+
+                        }
+                        break;
+
+                }
+                event=myparser.next();
+            }
+            return iterator;
+        }
+
+        public static Rect[] readAnimXML(Context context, String fileName){
+            Rect[] frame = new Rect[0];
+            int spriteCount;
             InputStream targetStream = null;
             try {
                 targetStream = context.getAssets().open(fileName);
@@ -26,12 +57,17 @@ public class AnimationUtils {
             }
 
             try {
+                spriteCount = countSprites(targetStream);
+                targetStream.close();
+                targetStream = context.getAssets().open(fileName);
+                frame = new Rect[spriteCount];
                 getFrames(targetStream,frame);
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return frame;
         }
 
         public static void getFrames(InputStream in, Rect[] frame)throws XmlPullParserException, IOException {
@@ -64,7 +100,7 @@ public class AnimationUtils {
                             int scaleH=(int)Math.ceil(1);
                             //Log.d("ScaleW", "ScaleH is "+scaleH);
 
-                            frame[iterator]=new Rect((int)x*scaleW,(int)y*scaleH,(int)x*scaleW+(int)(w*scaleW),(int)y*scaleH+(int)(h*scaleH));
+                            frame[iterator]=new Rect((int)x, (int) y,(int)(x + w),(int)(y + h));
                             //frame[iterator]= new Rect((int)x,(int)y,x+w,y+h);
                             iterator ++;
 

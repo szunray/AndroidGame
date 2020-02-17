@@ -1,18 +1,26 @@
 package com.example.androidgame.environment;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 
 import com.example.androidgame.GameView;
+import com.example.androidgame.common.AnimationUtils;
 import com.example.androidgame.common.MyDrawable;
 import com.example.androidgame.common.Element;
 import com.example.androidgame.common.Touchable;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.res.Resources;
 
 public class Room extends Element implements MyDrawable, Touchable {
     public Tile[] grid;
@@ -21,11 +29,28 @@ public class Room extends Element implements MyDrawable, Touchable {
     int centerY;
     Tile lastTouchedTile;
 
-    public Room(Display display) {
+    Bitmap spriteSheet;
+    Rect[] sprites;
+
+    public Room(GameView gameView) {
+        // cut from previous project
+        Context context = gameView.getContext();
+        Resources resources = context.getResources();
+        String nameOfImage = "basic_terrain";
+        int resId = context.getResources().getIdentifier(nameOfImage, "drawable", context.getPackageName());
+        spriteSheet = BitmapFactory.decodeResource(resources,resId);
+        spriteSheet = Bitmap.createScaledBitmap(spriteSheet,904,1824,false);
+
+        try {
+            sprites = AnimationUtils.AnimationTools.readAnimXML(context,nameOfImage+"_data.xml");
+        }catch(Exception r){
+            Log.d("XMLREAD","File not found");
+        }
+        //end
         location = new Point(0, 0);
         int height = 5;
         int width = 5;
-
+        Display display = GameView.gameDisplay;//gameView.getDisplay();
         Point size = new Point();
         display.getSize(size);
         int displayWidth = size.x;

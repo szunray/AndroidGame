@@ -1,5 +1,6 @@
 package com.example.androidgame.environment;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,13 +25,15 @@ public class World extends Element implements MyDrawable, Touchable {
     public static Room homeRoom;
 
     float touchX, touchY;
-
+    public Context context;
     public boolean pawnHighlighted = false;
     public Pawn pathBuildingPawn;
+    public  static GameView gameView;
     List<Tile> pathTiles = new ArrayList<Tile>();
 
-    public World(Display display) {
-        homeRoom = new Room(display);
+    public World(GameView view) {
+        gameView = view;
+        homeRoom = new Room(gameView);
         Map.add(homeRoom);
     }
 
@@ -43,7 +46,7 @@ public class World extends Element implements MyDrawable, Touchable {
 
         //determine the touched tile
         Tile pawnTile = null;
-        Room pawnRoom = new Room(GameView.gameDisplay);
+        Room pawnRoom = new Room(gameView);
         for (Room room : Map) {
             for (Tile tile : room.grid) {
 

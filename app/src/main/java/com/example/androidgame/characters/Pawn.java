@@ -64,7 +64,7 @@ public class Pawn extends Element implements MyDrawable, Touchable {
         if (!isMoving) {
             if (currentTile.doorway) {
                 // using a blank room temporarily
-                Room blankRoom = new Room(GameView.gameDisplay);
+                Room blankRoom = new Room(World.gameView);
                 //
                 currentTile.getRoom().explore(blankRoom, currentTile);
                 //World.homeRoom.updateCenter();
