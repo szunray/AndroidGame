@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:c3f65478e5561ac51d889d8becae09a9:69c0893fe14a55a18bb4ba57d626945e:27b54bc6fd16c85a425713a40915710e$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="Basic_Terrain_Sheet.png" width="904" height="1824">
+    <sprite n="block_NE.png" x="0" y="1320" w="226" h="251"/>
+    <sprite n="block_NW.png" x="226" y="1320" w="226" h="251"/>
+    <sprite n="block_SE.png" x="434" y="1572" w="226" h="252"/>
+    <sprite n="block_SW.png" x="452" y="1320" w="226" h="251"/>
+    <sprite n="blockCliff_NE.png" x="0" y="178" w="226" h="188"/>
+    <sprite n="blockCliff_NW.png" x="490" y="178" w="226" h="189"/>
+    <sprite n="blockCliff_SE.png" x="678" y="1320" w="226" h="252"/>
+    <sprite n="blockCliff_SW.png" x="678" y="567" w="226" h="251"/>
+    <sprite n="blockCliffCorner_NE.png" x="226" y="0" w="226" h="178"/>
+    <sprite n="blockCliffCorner_NW.png" x="226" y="178" w="132" h="189"/>
+    <sprite n="blockCliffCorner_SE.png" x="0" y="0" w="226" h="116"/>
+    <sprite n="blockCliffCorner_SW.png" x="358" y="178" w="132" h="189"/>
+    <sprite n="blockCornerLarge_NE.png" x="452" y="0" w="226" h="178"/>
+    <sprite n="blockCornerLarge_NW.png" x="0" y="818" w="132" h="251"/>
+    <sprite n="blockCornerLarge_SE.png" x="678" y="0" w="226" h="178"/>
+    <sprite n="blockCornerLarge_SW.png" x="132" y="818" w="132" h="251"/>
+    <sprite n="blockCornerSmall_NE.png" x="0" y="567" w="226" h="215"/>
+    <sprite n="blockCornerSmall_NW.png" x="264" y="818" w="184" h="251"/>
+    <sprite n="blockCornerSmall_SE.png" x="226" y="567" w="226" h="215"/>
+    <sprite n="blockCornerSmall_SW.png" x="448" y="818" w="184" h="251"/>
+    <sprite n="blockDirt_NE.png" x="632" y="818" w="208" h="251"/>
+    <sprite n="blockDirt_NW.png" x="0" y="1069" w="208" h="251"/>
+    <sprite n="blockDirt_SE.png" x="0" y="1572" w="208" h="252"/>
+    <sprite n="blockDirt_SW.png" x="208" y="1069" w="208" h="251"/>
+    <sprite n="blockDirtHalf_NE.png" x="0" y="367" w="208" h="199"/>
+    <sprite n="blockDirtHalf_NW.png" x="208" y="367" w="208" h="199"/>
+    <sprite n="blockDirtHalf_SE.png" x="624" y="367" w="208" h="200"/>
+    <sprite n="blockDirtHalf_SW.png" x="416" y="367" w="208" h="199"/>
+    <sprite n="blockLevel_NE.png" x="452" y="567" w="226" h="215"/>
+    <sprite n="blockLevel_NW.png" x="416" y="1069" w="226" h="251"/>
+    <sprite n="blockLevel_SE.png" x="208" y="1572" w="226" h="252"/>
+    <sprite n="blockLevel_SW.png" x="642" y="1069" w="226" h="251"/>
+</TextureAtlas>
